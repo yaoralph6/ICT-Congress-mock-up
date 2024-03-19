@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="ie-edge">
+		<meta name="viewport" content="width=device-width,initial-scale=1.0">
+		<link rel="stylesheet" href="assets/css/w3.css">
+		<script src="assets/js/angular.min.js"></script>
+	</head>
+	<body ng-app="app">
+		<div ng-controller="ctrl" class="w3-row">
+			<div class="w3-bar w3-pink w3-container w3-padding w3-card-4">
+				<h4>ICT Congress 2024</h4>
+			</div>
+			<br>
+			<div class="w3-half w3-container w3-padding">
+				<div class="w3-card-4 w3-round-xlarge w3-container w3-padding">
+					<p>
+						<label><b>IDNO</b></label>
+						<input required type="text" id="idno" ng-model="idno" class="w3-input">
+					</p>
+					<p>
+						<label><b>LASTNAME</b></label>
+						<input type="text" id="lastname" ng-model="lastname" class="w3-input" required>
+					</p>
+					<p>
+						<label><b>FIRSTNAME</b></label>
+						<input type="text" id="firstname" ng-model="firstname" class="w3-input" required>
+					</p>
+					<p>
+						<label><b>COURSES</b></label>
+						<select id="course" ng-model="course" class="w3-select" required>
+							<option value="bsit">INFORMATION TECHNOLOGY</option>
+							<option value="bsim">INFORMATION MANAGEMENT</option>
+							<option value="bsis">INFORMATION SYSTEMS</option>
+							<option value="bscs">COMPUTER SCIENCE</option>
+							<option value="act">ASSOC. IN COMPUTER TECH.</option>
+						</select>
+					</p>
+					<p>
+						<label><b>LEVEL</b></label>
+						<select id="level" ng-model="level" class="w3-select" required>
+							<option value="1">FIRST YEAR</option>
+							<option value="2">SECOND YEAR</option>
+							<option value="3">THIRD YEAR</option>
+							<option value="4">FOURTH YEAR</option>
+						</select>
+					</p>
+					<p>
+						<label><b>SHIRT SIZE</b></label>
+						<select id="SHIRTSIZE" ng-model="SHIRTSIZE" class="w3-select" required>
+							<option value="small">small</option>
+							<option value="medium">medium</option>
+							<option value="large">large</option>
+							<option value="extra large">extra large</option>
+						</select>
+					</p>
+					<p>
+						<label><b>Amt Paid</b></label>
+						<input type="number" id="AMT" ng-model="AMT" class="w3-input" required>
+					</p>
+					<p>
+						<button class="w3-button w3-blue w3-right" ng-click="save()">SAVE</button>
+					</p>
+					<br><br>
+				</div>
+			</div>
+			<input type="text" ng-model="search" placeholder="&#128269; search..." class="w3-padding w3-left"><br><br>
+			<p>TOTAL AMOUNT: {{totalAmount()}}</p>
+			<div class="w3-half w3-container w3-padding">
+				<table class="w3-table-all">
+					<tr>
+						<th ng-repeat="h in header">{{ h | uppercase}}</th>
+					</tr>
+					<tr ng-repeat="s in list | filter : search">
+						<td>{{ $index+1 }}</td>
+						<td>{{ s.idno }}</td>
+						<td>{{ s.lastname | uppercase}}</td>
+						<td>{{ s.firstname | uppercase}}</td>
+						<td>{{ s.course | uppercase}}</td>
+						<td>{{ s.level}} </td>
+						<td>{{ s.SHIRTSIZE | uppercase}}</td>
+						<td>{{ s.AMT | uppercase}}</td>
+						<td>
+						<button ng-click="remove($index)">&#128465;</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<script>
+			var app = angular.module('app',[]);
+			
+			app.controller("ctrl",function($scope){
+			
+				$scope.header = ['#','idno','lastname','firstname','crs','lvl','shirt size','Amount Paid','action'];
+			
+			
+				$scope.list = [];
+				$scope.list = JSON.parse(localStorage.getItem("studentlist"));
+				if($scope.list==null){
+					$scope.list=[];
+				}
+			
+			
+				$scope.save = function(){
+					var student = {
+						'idno':$scope.idno,
+						'lastname':$scope.lastname,
+						'firstname':$scope.firstname,
+						'course':$scope.course,
+						'level':$scope.level,
+						'SHIRTSIZE':$scope.SHIRTSIZE,
+						'AMT':$scope.AMT,
+					}
+					$scope.list.push(student);
+					localStorage.setItem("studentlist",JSON.stringify($scope.list));
+					alert("New Student Added");
+					document.getElementById('idno').value="";
+					document.getElementById('lastname').value="";
+					document.getElementById('firstname').value="";
+					document.getElementById('course').value="";
+					document.getElementById('level').value="";
+					document.getElementById('SHIRTSIZE').value="";
+					document.getElementById('AMT').value="";
+					document.getElementById('idno').focus();
+					
+				}
+				
+				$scope.remove = function(student) { 
+				  var index = $scope.list.indexOf(student);
+				  $scope.list.splice(index, 1);
+				  
+					localStorage.setItem("studentlist",JSON.stringify($scope.list));
+					alert("Student deleted");
+					document.getElementById('idno').value="";
+					document.getElementById('lastname').value="";
+					document.getElementById('firstname').value="";
+					document.getElementById('course').value="";
+					document.getElementById('level').value="";
+					document.getElementById('SHIRTSIZE').value="";
+					document.getElementById('AMT').value="";
+					document.getElementById('idno').focus();
+				  
+				}
+				
+				$scope.totalAmount = function(){
+				var total = 0;
+				for(var i = 0; i<$scope.list.length;i++){
+				total += parseFloat($scope.list[i]['AMT']);
+				}
+				return total.toFixed(2);
+				}
+				
+			});
+		</script>
+	</body>
+</html>
